@@ -41,6 +41,11 @@ public class NucleotideSeq {
         }
     }
 
+    public NucleotideSeq(String sequence, int start) {
+        this(sequence);
+        startPos=start;        
+    }
+
     public List<Nucleotide> getList() {
         return seq;
     }
