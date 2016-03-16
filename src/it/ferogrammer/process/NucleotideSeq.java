@@ -17,7 +17,7 @@ public class NucleotideSeq {
     private int startPos;
 
     public NucleotideSeq(String sequence) {
-        startPos = (int) Math.floor(Math.random()*1000);
+        startPos = (int) Math.floor(Math.random() * 1000);
         seq = new ArrayList<>();
         ColorableNucleotide n = null;
         for (int i = 0; i < sequence.length(); i++) {
@@ -35,8 +35,11 @@ public class NucleotideSeq {
                     n = Nucleotide.T;
                     break;
                 case 'n':
-                    n = new DoubleNucleotide(sequence.toLowerCase().charAt(i+2), sequence.toLowerCase().charAt(i+3));
-                    i=i+4;
+                    if (!(sequence.toLowerCase().charAt(i + 1) == '(' && sequence.toLowerCase().charAt(i + 4) == ')')) {
+                        throw new IllegalArgumentException("Error, correct format is: N(AC) ");
+                    }
+                    n = new DoubleNucleotide(sequence.toLowerCase().charAt(i + 2), sequence.toLowerCase().charAt(i + 3));
+                    i = i + 4;
                     break;
                 default:
                     throw new IllegalArgumentException("Sequence contains some unexpected characters");
@@ -47,7 +50,7 @@ public class NucleotideSeq {
 
     public NucleotideSeq(String sequence, int start) {
         this(sequence);
-        startPos=start;        
+        startPos = start;
     }
 
     public List<ColorableNucleotide> getList() {
@@ -57,11 +60,8 @@ public class NucleotideSeq {
     public int getStartPos() {
         return startPos;
     }
-    
 
     public int size() {
         return seq.size();
     }
-    
-    
 }

@@ -112,6 +112,7 @@ class ElectropherogramChartPanel extends ChartPanel {
                 }
             } else {
                 //TODO manage DoubleNucleotide here
+                //TODO fix bug of updating start position-0.5 in first nuc is N
                 DoubleNucleotide dn = (DoubleNucleotide) seq.getList().get(i);
                 boostSeriesAmplitude(dn.getNuc1(), i);
                 boostSeriesAmplitude(dn.getNuc1(), i);
