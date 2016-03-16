@@ -48,7 +48,7 @@ public class DoubleNucleotide implements ColorableNucleotide {
 
     @Override
     public Color getColor() {
-//        TODO: set color for N
+//        TODO: set color for N=magenta?? may be useful for label
         throw new UnsupportedOperationException("Set color for N label");
     }
 }

@@ -23,7 +23,7 @@ import org.jfree.ui.RectangleInsets;
  * @author enea
  */
 class ElectropherogramChartPanel extends ChartPanel {
-//TODO: manage 'n' in colors, labels and double peaks
+//TODO: missing manegement of 'N' in labels
 
     private NucleotideSeq seq;
     private final int PERTURB = 1000, PEAK = 2500, MEDIUM = 700;
@@ -77,22 +77,8 @@ class ElectropherogramChartPanel extends ChartPanel {
         initializeSeries(g, seq);
         for (int i = 0; i < seq.size(); i++) {
             if (seq.getList().get(i) instanceof Nucleotide) {
-                //TODO refactor here to use boostSeriesAmplitude
                 Nucleotide n = (Nucleotide) seq.getList().get(i);
-                switch (n) {
-                    case A:
-                        a.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                        break;
-                    case C:
-                        c.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                        break;
-                    case T:
-                        t.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                        break;
-                    case G:
-                        g.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                        break;
-                }
+                boostSeriesAmplitude(n, i);
                 //in case the previous nucleotide is the same as the current one interpolate with a non 0 datapoint
                 if (i > 0 && seq.getList().get(i - 1) == n) {
                     switch (n) {
@@ -111,8 +97,6 @@ class ElectropherogramChartPanel extends ChartPanel {
                     }
                 }
             } else {
-                //TODO manage DoubleNucleotide here
-                //TODO fix bug of updating start position-0.5 in first nuc is N
                 DoubleNucleotide dn = (DoubleNucleotide) seq.getList().get(i);
                 boostSeriesAmplitude(dn.getNuc1(), i);
                 boostSeriesAmplitude(dn.getNuc2(), i);
@@ -152,19 +136,19 @@ class ElectropherogramChartPanel extends ChartPanel {
         }
     }
 
-    private void boostSeriesAmplitude(Nucleotide nuc, int i) {
+    private void boostSeriesAmplitude(Nucleotide nuc, int position) {
         switch (nuc) {
             case A:
-                a.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                a.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
             case C:
-                c.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                c.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
             case T:
-                t.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                t.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
             case G:
-                g.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                g.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
         }
     }
