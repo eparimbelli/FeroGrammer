@@ -155,16 +155,16 @@ class ElectropherogramChartPanel extends ChartPanel {
     private void boostSeriesAmplitude(Nucleotide nuc, int i) {
         switch (nuc) {
             case A:
-                a.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                a.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
             case C:
-                c.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                c.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
             case T:
-                t.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                t.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
             case G:
-                g.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                g.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                 break;
         }
     }
