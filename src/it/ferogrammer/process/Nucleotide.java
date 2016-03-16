@@ -10,7 +10,7 @@ import java.awt.Color;
  *
  * @author enea
  */
-public enum Nucleotide {
+public enum Nucleotide implements ColorableNucleotide{
     A(Color.GREEN), C(Color.BLUE), T(Color.RED), G(Color.BLACK);
     private Color color;
     

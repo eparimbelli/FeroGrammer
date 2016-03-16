@@ -13,13 +13,13 @@ import java.util.List;
  */
 public class NucleotideSeq {
 
-    private List<Nucleotide> seq;
+    private List<ColorableNucleotide> seq;
     private int startPos;
 
     public NucleotideSeq(String sequence) {
         startPos = (int) Math.floor(Math.random()*1000);
         seq = new ArrayList<>();
-        Nucleotide n = null;
+        ColorableNucleotide n = null;
         for (int i = 0; i < sequence.length(); i++) {
             switch (sequence.toLowerCase().charAt(i)) {
                 case 'a':
@@ -34,6 +34,10 @@ public class NucleotideSeq {
                 case 't':
                     n = Nucleotide.T;
                     break;
+                case 'n':
+                    n = new DoubleNucleotide(sequence.toLowerCase().charAt(i+2), sequence.toLowerCase().charAt(i+3));
+                    i=i+4;
+                    break;
                 default:
                     throw new IllegalArgumentException("Sequence contains some unexpected characters");
             }
@@ -46,7 +50,7 @@ public class NucleotideSeq {
         startPos=start;        
     }
 
-    public List<Nucleotide> getList() {
+    public List<ColorableNucleotide> getList() {
         return seq;
     }
 

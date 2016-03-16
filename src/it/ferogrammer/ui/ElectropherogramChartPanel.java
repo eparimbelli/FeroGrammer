@@ -4,6 +4,7 @@
  */
 package it.ferogrammer.ui;
 
+import it.ferogrammer.process.DoubleNucleotide;
 import it.ferogrammer.process.Nucleotide;
 import it.ferogrammer.process.NucleotideSeq;
 import java.awt.Color;
@@ -22,9 +23,11 @@ import org.jfree.ui.RectangleInsets;
  * @author enea
  */
 class ElectropherogramChartPanel extends ChartPanel {
+//TODO: manage 'n' in colors, labels and double peaks
 
     private NucleotideSeq seq;
     private final int PERTURB = 1000, PEAK = 2500, MEDIUM = 700;
+    XYSeries a, c, t, g;
 
     public ElectropherogramChartPanel(NucleotideSeq seq) {
         super(null);
@@ -50,12 +53,12 @@ class ElectropherogramChartPanel extends ChartPanel {
         return jfreechart;
 
     }
-    
-    private XYSplineRenderer setColorsAndLabels(XYSplineRenderer xysplinerenderer){
+
+    private XYSplineRenderer setColorsAndLabels(XYSplineRenderer xysplinerenderer) {
         Nucleotide[] nucs = Nucleotide.values();
         for (int i = 0; i < nucs.length; i++) {
             xysplinerenderer.setSeriesPaint(i, nucs[i].getColor());
-            xysplinerenderer.setSeriesItemLabelPaint(i, nucs[i].getColor());   
+            xysplinerenderer.setSeriesItemLabelPaint(i, nucs[i].getColor());
         }
         xysplinerenderer.setBaseShapesVisible(false);
         xysplinerenderer.setBaseItemLabelGenerator(new NucleotideItemLabelGenerator());
@@ -64,46 +67,54 @@ class ElectropherogramChartPanel extends ChartPanel {
     }
 
     private XYDataset createGraphData() {
-        XYSeries a = new XYSeries("A");
+        a = new XYSeries("A");
         initializeSeries(a, seq);
-        XYSeries c = new XYSeries("C");
+        c = new XYSeries("C");
         initializeSeries(c, seq);
-        XYSeries t = new XYSeries("T");
+        t = new XYSeries("T");
         initializeSeries(t, seq);
-        XYSeries g = new XYSeries("G");
+        g = new XYSeries("G");
         initializeSeries(g, seq);
         for (int i = 0; i < seq.size(); i++) {
-            Nucleotide n = seq.getList().get(i);
-            switch (n) {
-                case A:
-                    a.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                    break;
-                case C:
-                    c.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                    break;
-                case T:
-                    t.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                    break;
-                case G:
-                    g.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
-                    break;
-            }
-            //in case the previous nucleotide is the same as the current one interpolate with a non 0 datapoint
-            if (i > 0 && seq.getList().get(i - 1) == n) {
+            if (seq.getList().get(i) instanceof Nucleotide) {
+                //TODO refactor here to use boostSeriesAmplitude
+                Nucleotide n = (Nucleotide) seq.getList().get(i);
                 switch (n) {
                     case A:
-                        a.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                        a.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                         break;
                     case C:
-                        c.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                        c.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                         break;
                     case T:
-                        t.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                        t.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                         break;
                     case G:
-                        g.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                        g.update(new Double(i + seq.getStartPos()), PEAK - Math.random() * PERTURB);
                         break;
                 }
+                //in case the previous nucleotide is the same as the current one interpolate with a non 0 datapoint
+                if (i > 0 && seq.getList().get(i - 1) == n) {
+                    switch (n) {
+                        case A:
+                            a.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                            break;
+                        case C:
+                            c.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                            break;
+                        case T:
+                            t.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                            break;
+                        case G:
+                            g.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                            break;
+                    }
+                }
+            } else {
+                //TODO manage DoubleNucleotide here
+                DoubleNucleotide dn = (DoubleNucleotide) seq.getList().get(i);
+                boostSeriesAmplitude(dn.getNuc1(), i);
+                boostSeriesAmplitude(dn.getNuc1(), i);
             }
         }
 
@@ -137,6 +148,23 @@ class ElectropherogramChartPanel extends ChartPanel {
         for (int i = startPos; i < startPos + size; i++) {
             series.add(i + 0.5D, Math.random() * 3);
             series.add(i, Math.random() * 250);
+        }
+    }
+
+    private void boostSeriesAmplitude(Nucleotide nuc, int i) {
+        switch (nuc) {
+            case A:
+                a.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                break;
+            case C:
+                c.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                break;
+            case T:
+                t.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                break;
+            case G:
+                g.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
+                break;
         }
     }
 }
