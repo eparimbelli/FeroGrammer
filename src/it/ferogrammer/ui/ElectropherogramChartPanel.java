@@ -78,28 +78,17 @@ class ElectropherogramChartPanel extends ChartPanel {
         for (int i = 0; i < seq.size(); i++) {
             if (seq.getList().get(i) instanceof Nucleotide) {
                 Nucleotide n = (Nucleotide) seq.getList().get(i);
-                boostSeriesAmplitude(n, i);
+                boostSeriesAmplitude(n, i, PEAK, PERTURB);
                 //in case the previous nucleotide is the same as the current one interpolate with a non 0 datapoint
                 if (i > 0 && seq.getList().get(i - 1) == n) {
-                    switch (n) {
-                        case A:
-                            a.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
-                            break;
-                        case C:
-                            c.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
-                            break;
-                        case T:
-                            t.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
-                            break;
-                        case G:
-                            g.update(new Double(i + seq.getStartPos() - 0.5), MEDIUM - Math.random() * (PERTURB / 3));
-                            break;
-                    }
+                    boostSeriesAmplitude(n, i-0.5, MEDIUM, PERTURB/3);
                 }
             } else {
+                //this means the position holds a DoubleNucleotide N(nuc1,nuc2)
                 DoubleNucleotide dn = (DoubleNucleotide) seq.getList().get(i);
-                boostSeriesAmplitude(dn.getNuc1(), i);
-                boostSeriesAmplitude(dn.getNuc2(), i);
+                //create the double peak in the 2 series
+                boostSeriesAmplitude(dn.getNuc1(), i, PEAK, PERTURB);
+                boostSeriesAmplitude(dn.getNuc2(), i, PEAK, PERTURB);
             }
         }
 
@@ -136,19 +125,19 @@ class ElectropherogramChartPanel extends ChartPanel {
         }
     }
 
-    private void boostSeriesAmplitude(Nucleotide nuc, int position) {
+    private void boostSeriesAmplitude(Nucleotide nuc, double position, int peak, int perturb) {
         switch (nuc) {
             case A:
-                a.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                a.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
                 break;
             case C:
-                c.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                c.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
                 break;
             case T:
-                t.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                t.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
                 break;
             case G:
-                g.update(new Double(position + seq.getStartPos()), PEAK - Math.random() * PERTURB);
+                g.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
                 break;
         }
     }

@@ -206,7 +206,7 @@ public class MainAppFrame extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         JOptionPane op = new JOptionPane();
-        op.showMessageDialog(this, "Copyright (c) 2016 Enea Parimbelli (https://github.com/eparimbelli/FeroGrammer) - terms of the MIT license apply", "FeroGrammer v1.0", JOptionPane.INFORMATION_MESSAGE);
+        op.showMessageDialog(this, "Copyright (c) 2016 Enea Parimbelli (https://github.com/eparimbelli/FeroGrammer) - terms of the MIT license apply", "FeroGrammer v1.1", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
