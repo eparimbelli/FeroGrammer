@@ -35,7 +35,7 @@ public class NucleotideSeq {
                     n = Nucleotide.T;
                     break;
                 case 'n':
-                    if (!(sequence.toLowerCase().charAt(i + 1) == '(' && sequence.toLowerCase().charAt(i + 4) == ')')) {
+                    if (i>=sequence.length()-4 || !(sequence.toLowerCase().charAt(i + 1) == '(' && sequence.toLowerCase().charAt(i + 4) == ')')) {
                         throw new IllegalArgumentException("Error, correct format is: N(AC) ");
                     }
                     n = new DoubleNucleotide(sequence.toLowerCase().charAt(i + 2), sequence.toLowerCase().charAt(i + 3));
