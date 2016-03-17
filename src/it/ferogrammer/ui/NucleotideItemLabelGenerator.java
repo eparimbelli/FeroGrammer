@@ -52,7 +52,7 @@ public class NucleotideItemLabelGenerator implements XYItemLabelGenerator {
         //NOTE: used dataset.getSeriesCount()-1 to exclude last series which is the accessory 'N' series
         for (int i = 0; i < dataset.getSeriesCount()-1; i++) {
             if(i==series) continue; //do not consider the current series
-            if(dataset.getYValue(series, item)>=1500) only1=false;           
+            if(dataset.getYValue(i, item)>=1500) only1=false;           
         }
         return only1;
     }
