@@ -28,6 +28,7 @@ class ElectropherogramChartPanel extends ChartPanel {
     private NucleotideSeq seq;
     private final int PERTURB = 1000, PEAK = 2500, MEDIUM = 700;
     XYSeries a, c, t, g;
+    XYSeries n;
 
     public ElectropherogramChartPanel(NucleotideSeq seq) {
         super(null);
@@ -60,6 +61,11 @@ class ElectropherogramChartPanel extends ChartPanel {
             xysplinerenderer.setSeriesPaint(i, nucs[i].getColor());
             xysplinerenderer.setSeriesItemLabelPaint(i, nucs[i].getColor());
         }
+        //special lines for N "hidden" series
+//        xysplinerenderer.setSeriesPaint(4, new DoubleNucleotide().getColor());
+        xysplinerenderer.setSeriesItemLabelPaint(4, new DoubleNucleotide().getColor());
+        xysplinerenderer.setSeriesLinesVisible(4, false);
+        //set points shape and labels
         xysplinerenderer.setBaseShapesVisible(false);
         xysplinerenderer.setBaseItemLabelGenerator(new NucleotideItemLabelGenerator());
         xysplinerenderer.setBaseItemLabelsVisible(true);
@@ -75,6 +81,8 @@ class ElectropherogramChartPanel extends ChartPanel {
         initializeSeries(t, seq);
         g = new XYSeries("G");
         initializeSeries(g, seq);
+        n = new XYSeries("N");
+        initializeSeries(n, seq);
         for (int i = 0; i < seq.size(); i++) {
             if (seq.getList().get(i) instanceof Nucleotide) {
                 Nucleotide n = (Nucleotide) seq.getList().get(i);
@@ -87,8 +95,9 @@ class ElectropherogramChartPanel extends ChartPanel {
                 //this means the position holds a DoubleNucleotide N(nuc1,nuc2)
                 DoubleNucleotide dn = (DoubleNucleotide) seq.getList().get(i);
                 //create the double peak in the 2 series
-                boostSeriesAmplitude(dn.getNuc1(), i, PEAK, PERTURB);
-                boostSeriesAmplitude(dn.getNuc2(), i, PEAK, PERTURB);
+                Double peak1 = boostSeriesAmplitude(dn.getNuc1(), i, PEAK, PERTURB);
+                Double peak2 = boostSeriesAmplitude(dn.getNuc2(), i, PEAK, PERTURB);
+                updateNSeries(i, Math.max(peak1, peak2));
             }
         }
 
@@ -97,6 +106,7 @@ class ElectropherogramChartPanel extends ChartPanel {
         xyseriescollection.addSeries(c);
         xyseriescollection.addSeries(t);
         xyseriescollection.addSeries(g);
+        xyseriescollection.addSeries(n);
         return xyseriescollection;
 
 
@@ -125,20 +135,26 @@ class ElectropherogramChartPanel extends ChartPanel {
         }
     }
 
-    private void boostSeriesAmplitude(Nucleotide nuc, double position, int peak, int perturb) {
+    private Double boostSeriesAmplitude(Nucleotide nuc, double position, int peak, int perturb) {
+        Double updateVal = peak - Math.random() * perturb;
         switch (nuc) {
             case A:
-                a.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
+                a.update(new Double(position + seq.getStartPos()), updateVal);
                 break;
             case C:
-                c.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
+                c.update(new Double(position + seq.getStartPos()), updateVal);
                 break;
             case T:
-                t.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
+                t.update(new Double(position + seq.getStartPos()), updateVal);
                 break;
             case G:
-                g.update(new Double(position + seq.getStartPos()), peak - Math.random() * perturb);
+                g.update(new Double(position + seq.getStartPos()), updateVal);
                 break;
         }
+        return updateVal;
+    }
+
+    private void updateNSeries(double position, double updateVal) {
+        n.update(new Double(position + seq.getStartPos()), updateVal);
     }
 }
